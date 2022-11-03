@@ -1,0 +1,37 @@
+
+task sourceJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    //from android.sourceSets.main.java.getSrcDirs()
+    archiveClassifier = "sources"
+}
+
+afterEvaluate {
+    publishing {
+
+        repositories { RepositoryHandler handler ->
+            handler.mavenLocal()
+        }
+
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                // Applies the component for the release build variant.
+                from components.release
+                artifact sourceJar
+                // You can then customize attributes of the publication as shown below.
+                groupId = 'com.example.MyLibrary'
+                artifactId = 'final'
+                version = '1.0.0'
+            }
+            // Creates a Maven publication called “debug”.
+            debug(MavenPublication) {
+                // Applies the component for the debug build variant.
+                from components.debug
+                artifact sourceJar
+                groupId = 'com.example.MyLibrary'
+                artifactId = 'final'
+                version = '1.0.0-SNAPSHOT'
+            }
+        }
+    }
+}
